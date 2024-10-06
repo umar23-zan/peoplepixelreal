@@ -1,10 +1,13 @@
 .sidebar-section {
   position: fixed;
-  top: 55px;
+  top: 56px;
   bottom: 0;
   left: 0;
   background-color: #172030;
   color: white;
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-right-color: white;
   height: 100vh;
   transition: transform 0.3s ease;
   z-index: 1000;
@@ -61,10 +64,7 @@
 
 }
 
-.sidebar-event-categories-section{
-  display: flex;
-  flex-direction: column;
-}
+
 
 .event-footer-section {
   margin-top: 350px;

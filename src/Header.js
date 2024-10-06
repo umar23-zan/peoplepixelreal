@@ -1,9 +1,9 @@
 import React from 'react';
 import './header.css';
 import Logo from './imageFolder/logo.png';
-import Menu from './icons/menu-svgrepo-com.svg';
-import Search from './icons/search-svgrepo-com.svg';
-import Account from './icons/account-svgrepo-com.svg';
+import Menu from './icons/menu_open_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
+import Search from './icons/search_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
+import Account from './icons/account_circle_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
 
 const Header = ({ toggleSidebar }) => {
   return (

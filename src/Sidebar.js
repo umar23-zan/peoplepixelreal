@@ -1,6 +1,6 @@
 import React from 'react';
 import './sidebar.css';
-import Quicklink from './icons/link-svgrepo-com.svg';
+import Quicklink from './icons/question_exchange_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
 import GoBack from './icons/arrow_circle_left_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {

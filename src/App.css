@@ -1,18 +1,34 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
 .App {
   display: flex;
   flex-direction: column;
+  background-color: #172030;
+  height: 100vh; /* Full viewport height */
+  margin: 0;
+  padding: 0;
 }
 
 .main-content {
+  
   display: flex;
   height: 100vh;
+  margin: 0;     /* Ensure no margins */
+  padding: 0; 
 }
 
 .content-area {
-  flex: 1;
-  padding: 20px;
-  transition: margin-left 0.3s ease;
+  flex-grow: 1;
+  margin: 0;
+  padding: 0;
 }
+
 
 .content-area.sidebar-open {
   margin-left: 250px; /* Space for the sidebar */

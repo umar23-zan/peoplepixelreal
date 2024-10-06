@@ -1,9 +1,9 @@
 import React from 'react'
 import './contents.css';
-import Family from './icons/family-svgrepo-com.svg'
-import Friends from './icons/friends-talking-svgrepo-com.svg';
-import Others from './icons/more-svgrepo-com.svg';
-import Addmore from './icons/add-square-svgrepo-com.svg';
+import Family from './icons/diversity_1_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg'
+import Friends from './icons/diversity_3_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
+import Others from './icons/groups_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
+import Addmore from './icons/group_add_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
 import { useNavigate } from "react-router-dom";
 
 
