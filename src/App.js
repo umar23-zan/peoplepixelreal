@@ -4,6 +4,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import Contents from './Contents';
 import Contacts from './Contacts';
+import Father from './Father'
 import Friends from './Friends';
 import Others from './Others';
 import Addmore from './Addmore';
@@ -26,6 +27,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Contents />} />
               <Route path="/contacts" element={<Contacts />} />
+              <Route path="/father" element={<Father />} />
               <Route path="/friends" element={<Friends />} />
               <Route path="/others" element={<Others />} />
               <Route path="/addmore" element={<Addmore />} />
