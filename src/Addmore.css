@@ -1,0 +1,47 @@
+.Addmore-section{
+  padding-top: 200px;
+  padding-left: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-text{
+  display: flex;
+  flex-direction: column;
+  height: 30px;
+  width: 250px;
+  border: none;
+  border-radius: 50px;
+  text-align: center;
+  margin-bottom: 20px;
+  
+}
+
+.input-file{
+  display: flex;
+  flex-direction: column;
+  height: 30px;
+  width: 250px;
+  border: none;
+  padding: 10px;
+  border-radius: 50px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-save{
+  border: none;
+  border-radius: 50px;
+  width: 250px;
+  height: 30px;
+
+}
+
+.input-save:hover{
+  background-color: aquamarine;
+  
+}
+

@@ -1,42 +1,56 @@
-import React from 'react'
-import './contents.css';
-import Family from './icons/diversity_1_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg'
-import Friends from './icons/diversity_3_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
-import Others from './icons/groups_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
-import Addmore from './icons/group_add_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "./firebase"; // Import Firestore db
+import Addmore from './icons/group_add_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg'; // Add More icon
+import './contents.css'
 
 const Contents = () => {
   const navigate = useNavigate();
-   const contentItems =[
-    { title: 'Family', img:Family, alt:'family', route:'/contacts' },
-    { title: 'Friends', img:Friends, alt:'friends', route:'/friends' },
-    { title: 'Others', img:Others, alt:'others', route:'/others' },
-    { title: 'Add More', img:Addmore, alt:'addmore', route:'/addmore' },
-   ];
+  const [contentItems, setContentItems] = useState([]);
 
-   const handelClick = (route) =>
-   {
+  const fetchCategories = async () => {
+    const querySnapshot = await getDocs(collection(db, "categories"));
+    const fetchedItems = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Add 'Add More' category manually at the end
+    const addMoreCategory = {
+      title: "Add More",
+      img: Addmore,
+      alt: "addmore",
+      route: "/addmore",
+    };
+
+    setContentItems([...fetchedItems, addMoreCategory]);
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleClick = (route) => {
     navigate(route);
-   };
+  };
 
-   return (
+  return (
     <main>
-      <section className='video-grid'>
-        {contentItems.map((item,index) =>(
-          <div key={index} className='video-preview'>
-              <div className='thumbnail-row' onClick={()=>handelClick(item.route)}>
-                <img className='thumbnail' src={item.img} alt={item.alt}/>
-              </div>
-              <div className='video-info'>
-                <p className='video-title'>{item.title}</p>
-              </div>
+      <section className="video-grid">
+        {contentItems.map((item, index) => (
+          <div key={index} className="video-preview">
+            <div className="thumbnail-row" onClick={() => handleClick(item.route || "/")}>
+              <img className="thumbnail" src={item.imageUrl || item.img} alt={item.title} />
+            </div>
+            <div className="video-info">
+              <p className="video-title">{item.title}</p>
+            </div>
           </div>
         ))}
       </section>
     </main>
-   )
-}
+  );
+};
 
-export default Contents
+export default Contents;
