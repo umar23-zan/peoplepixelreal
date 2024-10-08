@@ -1,7 +1,7 @@
 import './contents.css'
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc} from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc,  updateDoc, setDoc} from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { db, storage } from "./firebase"; // Import Firestore db and Firebase Storage
 import Addmore from './icons/group_add_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg'; // Add More icon
@@ -96,13 +96,16 @@ const Contents = () => {
         await uploadBytes(imageRef, newCategoryImage);
         imageUrl = await getDownloadURL(imageRef);
       }
-
-      // Add the new category to Firestore
-      await addDoc(collection(db, "categories"), {
+  
+      // Ensure the title is valid for a Firestore document ID (optional)
+      const validTitle = newCategoryTitle.replace(/[^a-zA-Z0-9-_]/g, '_'); // Replace invalid characters with underscores
+  
+      // Set the document with the title as the document ID
+      await setDoc(doc(db, "categories", validTitle), {
         title: newCategoryTitle,
         imageUrl,
       });
-
+  
       setNewCategoryTitle('');
       setNewCategoryImage(null);
       setShowAddMoreForm(false);
