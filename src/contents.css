@@ -3,6 +3,7 @@
 }
 
 .video-title {
+  
   margin-top: 0;
   font-size: 24px;
   font-weight: 700;
@@ -69,3 +70,25 @@
   }
 }
 
+.video-info{
+  display: flex;
+  flex-direction: column;
+}
+
+.video-edit-btn{
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  
+  
+}
+
+.video-edit-btn button{
+  background-color: #0c111a;
+  margin-right: 5px;
+  border: none;
+}
+
+.video-edit-btn button:hover{
+  cursor: pointer;
+}

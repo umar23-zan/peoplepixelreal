@@ -4,7 +4,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import Contents from './Contents';
 import Contacts from './Contacts';
-import Father from './Father'
+import Father from './Info'
 import Friends from './Friends';
 import Others from './Others';
 import Addmore from './Addmore';
