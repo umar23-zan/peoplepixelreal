@@ -1,57 +1,83 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from './Header';
-import Sidebar from './Sidebar';
-import Father from './imageFolder/Father.png';
-import Mother from './imageFolder/Mother.png';
-import Brother from './imageFolder/Brother.png';
-import Sister from './imageFolder/Sister.png';
-import ElderSister from './imageFolder/ElderSister.png';
-import GrandFather from './imageFolder/GrandFather.png';
-import GrandMother from './imageFolder/GrandMother.png';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { db, storage } from './firebase'; // Ensure storage is exported from firebase.js
+import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const Contacts = () => {
-  const navigate = useNavigate();  // Hook to navigate to other pages
+  const { categoryId } = useParams();
+  const [contacts, setContacts] = useState([]);
+  const [name, setName] = useState('');
+  const [image, setImage] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
-  const contentItems = [
-    { title: 'Father', img: Father, alt: 'father', path: '/father' },
-    { title: 'Mother', img: Mother, alt: 'mother' },
-    { title: 'Brother', img: Brother, alt: 'brother' },
-    { title: 'Elder Sister', img: ElderSister, alt: 'eldersister' },
-    { title: 'Sister', img: Sister, alt: 'sister' },
-    { title: 'Grand Father', img: GrandFather, alt: 'grandfather' },
-    { title: 'Grand Mother', img: GrandMother, alt: 'grandmother' },
-  ];
+  // Fetch contacts from Firestore
+  const fetchContacts = useCallback(async () => {
+    const contactsCollection = collection(db, `categories/${categoryId}/contacts`);
+    const contactsSnapshot = await getDocs(contactsCollection);
+    const contactsList = contactsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setContacts(contactsList);
+  }, [categoryId]);
 
-  const handleRedirect = (path) => {
-    if (path) {
-      navigate(path);  // Redirect to the provided path
-    }
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name || !image) return; // Validate inputs
+
+    // Upload the image to Firebase Storage
+    const storageRef = ref(storage, `images/${image.name}`);
+    await uploadBytes(storageRef, image);
+    const imageUrl = await getDownloadURL(storageRef);
+
+    // Add the new contact to Firestore
+    await addDoc(collection(db, `categories/${categoryId}/contacts`), {
+      name,
+      imageUrl,
+    });
+
+    setName('');
+    setImage(null);
+    fetchContacts(); // Refresh the contacts list
   };
+
+  // Navigate to the contact's Info page
+  const handleContactClick = (contactId) => {
+    navigate(`/categories/${categoryId}/contacts/${contactId}/info`);
+  };
+
+  useEffect(() => {
+    fetchContacts();
+  }, [fetchContacts]);
 
   return (
     <div>
-      <Header />
-      <Sidebar />
-      <main>
-        <section className='video-grid'>
-          {contentItems.map((item, index) => (
-            <div 
-              key={index} 
-              className='video-preview' 
-              onClick={() => handleRedirect(item.path)}
-              style={{ cursor: item.path ? 'pointer' : 'default' }}  // Show pointer cursor for clickable items
-            >
-              <div className='thumbnail-row'>
-                <img className='thumbnail' src={item.img} alt={item.alt} />
-              </div>
-              <div className='video-info'>
-                <p className='video-title'>{item.title}</p>
-              </div>
-            </div>
-          ))}
-        </section>
-      </main>
+      <h1>Contacts in {categoryId}</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Contact Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          required
+        />
+        <button type="submit">Add Contact</button>
+      </form>
+
+      <h2>Contact List:</h2>
+      <ul>
+        {contacts.map(contact => (
+          <li key={contact.id} onClick={() => handleContactClick(contact.id)} style={{ cursor: 'pointer' }}>
+            <h3>{contact.name}</h3>
+            {contact.imageUrl && <img src={contact.imageUrl} alt={contact.name} width="100" />}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

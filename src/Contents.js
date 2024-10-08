@@ -90,22 +90,28 @@ const Contents = () => {
   // Add a new category
   const handleAddCategory = async () => {
     try {
+      if (!newCategoryTitle) {
+        alert("Category title is required."); // Optional: Alert if title is empty
+        return;
+      }
+
       let imageUrl = null;
       if (newCategoryImage) {
         const imageRef = ref(storage, `categories/${newCategoryImage.name}`);
         await uploadBytes(imageRef, newCategoryImage);
         imageUrl = await getDownloadURL(imageRef);
       }
-  
-      // Ensure the title is valid for a Firestore document ID (optional)
-      const validTitle = newCategoryTitle.replace(/[^a-zA-Z0-9-_]/g, '_'); // Replace invalid characters with underscores
-  
-      // Set the document with the title as the document ID
-      await setDoc(doc(db, "categories", validTitle), {
+
+      // Create the category document using the title as the document name
+      const categoryRef = doc(db, "categories", newCategoryTitle);
+      await setDoc(categoryRef, {
         title: newCategoryTitle,
         imageUrl,
       });
-  
+
+      // Create an empty Contacts collection
+      await setDoc(doc(categoryRef, "Contacts", "dummy"), {}); // Just creating a document inside Contacts to establish the collection
+
       setNewCategoryTitle('');
       setNewCategoryImage(null);
       setShowAddMoreForm(false);
@@ -114,6 +120,7 @@ const Contents = () => {
       console.error("Error adding category: ", error);
     }
   };
+
 
   return (
     <main>
@@ -139,7 +146,7 @@ const Contents = () => {
             ) : (
               // Display mode
               <div>
-                <div className="thumbnail-row" onClick={() => navigate(item.route || "/Contacts")}>
+                <div className="thumbnail-row" onClick={() => navigate(`/contacts/${item.id}`)}>
                   <img className="thumbnail" src={item.imageUrl || item.img} alt={item.title} />
                 </div>
                 <div className="video-info">

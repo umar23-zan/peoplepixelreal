@@ -4,11 +4,8 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import Contents from './Contents';
 import Contacts from './Contacts';
-import Father from './Info'
-import Friends from './Friends';
-import Others from './Others';
-import Addmore from './Addmore';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Info from './Info'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar state
@@ -25,12 +22,17 @@ function App() {
           <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> {/* Pass sidebar state and toggle function */}
           <div className={`content-area ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
             <Routes>
-              <Route path="/" element={<Contents />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/father" element={<Father />} />
-              <Route path="/friends" element={<Friends />} />
-              <Route path="/others" element={<Others />} />
-              <Route path="/addmore" element={<Addmore />} />
+            <Route path="/" element={<Navigate to="/categories" />} />
+              {/* Route to list all categories */}
+              <Route path="/categories" element={<Contents />} />
+              
+              {/* Route to list contacts for a given category */}
+              <Route path="/contacts/:categoryId" element={<Contacts />} />
+
+              {/* Route to show info (To-do, Reminders, Finance) for a specific contact */}
+              <Route path="/categories/:categoryId/contacts/:contactId/info" element={<Info />} />
+
+            
             </Routes>
           </div>
         </div>

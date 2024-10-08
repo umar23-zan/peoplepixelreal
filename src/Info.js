@@ -1,102 +1,62 @@
-import React from 'react'
-import Header from './Header'
-import Sidebar from './Sidebar'
-import FatherImg from './imageFolder/Father.png'
-import { useState } from 'react'
-import './Father.css'
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { db } from './firebase';
 
+const Info = () => {
+  const { categoryId, contactId } = useParams(); // Get categoryId and contactId from URL
+  const [todoList, setTodoList] = useState([]);
+  const [newTodo, setNewTodo] = useState('');
+  
+  
 
-const Father = () => {
+  // Fetch data for the contact's info (todoList, reminderList, financeList)
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const todoSnapshot = await getDocs(collection(db, `categories/${categoryId}/contacts/${contactId}/info`));
+      const todoData = todoSnapshot.docs.map(doc => doc.data());
+      
+      // Assume the document IDs are 'todoList', 'reminderList', 'financeList'
+      const todoDoc = todoData.find(doc => doc.id === 'todoList');
+      
 
-  const [todos, setTodos] = useState([
-    { text: 'Buy groceries', dueDate: '2024-10-08', priority: 'High', completed: false },
-    { text: 'Finish project', dueDate: '2024-10-10', priority: 'Medium', completed: false },
-  ]);
+      setTodoList(todoDoc ? todoDoc.tasks : []);
+      
+    };
 
-  const [newTodoText, setNewTodoText] = useState('');
-  const [newDueDate, setNewDueDate] = useState('');
-  const [newPriority, setNewPriority] = useState('Medium');
+    fetchInfo();
+  }, [categoryId, contactId]);
 
-  // Add new todo
-  const handleAddTodo = () => {
-    if (newTodoText && newDueDate && newPriority) {
-      const newTodo = {
-        text: newTodoText,
-        dueDate: newDueDate,
-        priority: newPriority,
-        completed: false
-      };
-      setTodos([...todos, newTodo]);
-      setNewTodoText('');
-      setNewDueDate('');
-      setNewPriority('Medium');
-    }
+  // Add to the to-do list
+  const handleAddTodo = async () => {
+    if (!newTodo) return;
+
+    const todoRef = doc(db, `categories/${categoryId}/contacts/${contactId}/info`, 'todoList');
+    await updateDoc(todoRef, { tasks: [...todoList, newTodo] });
+    setTodoList((prev) => [...prev, newTodo]);
+    setNewTodo('');
   };
 
-  // Toggle completion status
-  const handleToggleComplete = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].completed = !updatedTodos[index].completed;
-    setTodos(updatedTodos);
-  };
-
+  // Render To-Do list, Reminders, and Finance similar to the example below
   return (
     <div>
-      <Header/>
-      <Sidebar/>
-      <main>
-        <section className='Info-grid'>
-          <div className='Info-section'>
-            <div className='Info-img'>
-              <img src={FatherImg} alt='father'></img>
-            </div>
-            <div className='Info-summary'>
-              <label>Summary</label>
-              <p>Name: Father</p>
-              <p>Age: 45</p>
-              <p>Contact no: 9500693343</p>
-              <p>I love My father</p>
-            </div>
-          </div>
-          <div className='todo-container'>
-            <div className='todo-container-header'>
-            <label>To-Do List</label>
-            <button className='add-todo-btn' onClick={handleAddTodo}>+ Add</button>
-            </div>
-            
-            <div className='add-todo-form'>
-              <input type='text' placeholder='To-Do Task' value={newTodoText} onChange={(e) => setNewTodoText(e.target.value)}/>
-              <input 
-                type="date" 
-                value={newDueDate} 
-                onChange={(e) => setNewDueDate(e.target.value)} 
-              />
-              <select value={newPriority} onChange={(e) => setNewPriority(e.target.value)}>
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
-              </select>
-            </div>
-            <ul className="todo-list">
-              {todos.map((todo, index) => (
-                <li key={index} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-                  <input 
-                    type="checkbox" 
-                    checked={todo.completed} 
-                    onChange={() => handleToggleComplete(index)} 
-                  />
-                  <span className="todo-text">{todo.text}</span>
-                  <span className="todo-date">Due: {todo.dueDate}</span>
-                  <span className={`todo-priority ${todo.priority.toLowerCase()}`}>{todo.priority}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-        
-      </main>
-    </div>
-  )
-}
+      <h2>To-Do List</h2>
+      <ul>
+        {todoList.map((task, index) => (
+          <li key={index}>{task}</li>
+        ))}
+      </ul>
+      <input
+        type="text"
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+        placeholder="New task"
+      />
+      <button onClick={handleAddTodo}>Add To-Do</button>
 
-export default Father
+      {/* Similar code for Reminders and Finance */}
+    </div>
+  );
+};
+
+export default Info;
