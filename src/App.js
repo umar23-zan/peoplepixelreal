@@ -30,7 +30,7 @@ function App() {
               <Route path="/contacts/:categoryId" element={<Contacts />} />
 
               {/* Route to show info (To-do, Reminders, Finance) for a specific contact */}
-              <Route path="/categories/:categoryId/contacts/:contactId/info" element={<Info />} />
+              <Route path="/info/:contentId/:contactId" element={<Info />} />
 
             
             </Routes>

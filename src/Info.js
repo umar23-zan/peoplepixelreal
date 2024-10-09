@@ -1,60 +1,103 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from './firebase';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "./firebase";
 
 const Info = () => {
-  const { categoryId, contactId } = useParams(); // Get categoryId and contactId from URL
-  const [todoList, setTodoList] = useState([]);
-  const [newTodo, setNewTodo] = useState('');
-  
-  
+  const { contentId, contactId } = useParams();  // Extract contentId and contactId from URL
+  const [infoData, setInfoData] = useState(null);
+  const [todoItem, setTodoItem] = useState('');
+  const [reminderItem, setReminderItem] = useState('');
+  const [financeItem, setFinanceItem] = useState('');
 
-  // Fetch data for the contact's info (todoList, reminderList, financeList)
   useEffect(() => {
     const fetchInfo = async () => {
-      const todoSnapshot = await getDocs(collection(db, `categories/${categoryId}/contacts/${contactId}/info`));
-      const todoData = todoSnapshot.docs.map(doc => doc.data());
-      
-      // Assume the document IDs are 'todoList', 'reminderList', 'financeList'
-      const todoDoc = todoData.find(doc => doc.id === 'todoList');
-      
-
-      setTodoList(todoDoc ? todoDoc.tasks : []);
-      
+      const docRef = doc(db, `contents/${contentId}/contacts/${contactId}/info`, "infoDocId");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setInfoData(docSnap.data());
+      } else {
+        console.log("No such document!");
+      }
     };
-
     fetchInfo();
-  }, [categoryId, contactId]);
+  }, [contentId, contactId]);
 
-  // Add to the to-do list
   const handleAddTodo = async () => {
-    if (!newTodo) return;
+    const updatedTodoList = [...infoData.todoList, { text: todoItem }];
+    const docRef = doc(db, `contents/${contentId}/contacts/${contactId}/info`, "infoDocId");
 
-    const todoRef = doc(db, `categories/${categoryId}/contacts/${contactId}/info`, 'todoList');
-    await updateDoc(todoRef, { tasks: [...todoList, newTodo] });
-    setTodoList((prev) => [...prev, newTodo]);
-    setNewTodo('');
+    await updateDoc(docRef, { todoList: updatedTodoList });
+    setTodoItem('');
+    setInfoData({ ...infoData, todoList: updatedTodoList });
   };
 
-  // Render To-Do list, Reminders, and Finance similar to the example below
+  const handleAddReminder = async () => {
+    const updatedReminderList = [...infoData.reminderList, { text: reminderItem }];
+    const docRef = doc(db, `contents/${contentId}/contacts/${contactId}/info`, "infoDocId");
+
+    await updateDoc(docRef, { reminderList: updatedReminderList });
+    setReminderItem('');
+    setInfoData({ ...infoData, reminderList: updatedReminderList });
+  };
+
+  const handleAddFinance = async () => {
+    const updatedFinanceList = [...infoData.financeList, { transaction: financeItem }];
+    const docRef = doc(db, `contents/${contentId}/contacts/${contactId}/info`, "infoDocId");
+
+    await updateDoc(docRef, { financeList: updatedFinanceList });
+    setFinanceItem('');
+    setInfoData({ ...infoData, financeList: updatedFinanceList });
+  };
+
+  if (!infoData) return <div>Loading...</div>;
+
   return (
     <div>
-      <h2>To-Do List</h2>
+      <h2>{infoData.summary.name}'s Info</h2>
+      <img src={infoData.summary.image} alt={infoData.summary.name} />
+
+      <h3>Todo List</h3>
       <ul>
-        {todoList.map((task, index) => (
-          <li key={index}>{task}</li>
+        {infoData.todoList.map((todo, index) => (
+          <li key={index}>{todo.text}</li>
         ))}
       </ul>
       <input
         type="text"
-        value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
-        placeholder="New task"
+        value={todoItem}
+        onChange={(e) => setTodoItem(e.target.value)}
+        placeholder="Add a new todo"
       />
-      <button onClick={handleAddTodo}>Add To-Do</button>
+      <button onClick={handleAddTodo}>Add Todo</button>
 
-      {/* Similar code for Reminders and Finance */}
+      <h3>Reminder List</h3>
+      <ul>
+        {infoData.reminderList.map((reminder, index) => (
+          <li key={index}>{reminder.text}</li>
+        ))}
+      </ul>
+      <input
+        type="text"
+        value={reminderItem}
+        onChange={(e) => setReminderItem(e.target.value)}
+        placeholder="Add a new reminder"
+      />
+      <button onClick={handleAddReminder}>Add Reminder</button>
+
+      <h3>Finance List</h3>
+      <ul>
+        {infoData.financeList.map((finance, index) => (
+          <li key={index}>{finance.transaction}</li>
+        ))}
+      </ul>
+      <input
+        type="text"
+        value={financeItem}
+        onChange={(e) => setFinanceItem(e.target.value)}
+        placeholder="Add a new transaction"
+      />
+      <button onClick={handleAddFinance}>Add Finance</button>
     </div>
   );
 };
