@@ -61,7 +61,9 @@ const Contents = () => {
     <main>
       <section className="video-grid">
         {contentItems.map((item, index) => (
-          <div key={index} className="video-preview" onClick={() => navigate(`/contacts/${item.id}`)}>
+          <div key={index} className="video-preview" onClick={() =>{
+            console.log(`${item.id}`);
+            navigate(`/contacts/${item.id}`)}}>
             <img className="thumbnail" src={item.imageUrl} alt={item.title} />
             <p className="video-title">{item.title}</p>
           </div>

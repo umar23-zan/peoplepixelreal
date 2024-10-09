@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { db } from './firebase'; // Import your Firestore configuration
-import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from './firebase'; 
+import {  doc, getDoc, setDoc } from 'firebase/firestore';
 
 const Info = () => {
-  const { categoryId, contactId } = useParams(); // Get categoryId and contactId from URL parameters
+  const { categoryId, contactId } = useParams();
   const [contact, setContact] = useState({});
   const [todos, setTodos] = useState([]);
   const [reminders, setReminders] = useState([]);
@@ -18,21 +18,23 @@ const Info = () => {
   const [newTransactionAmount, setNewTransactionAmount] = useState('');
   const [newTransactionType, setNewTransactionType] = useState('Expense');
 
+  
 
   useEffect(() => {
+    console.log("useEffect running with categoryId:", categoryId, "contactId:", contactId); // Check if the effect is triggered
     const fetchContactData = async () => {
-      // Create a reference to the contact document
-      const contactDocRef = doc(collection(db, `categories/${categoryId}/contacts`), contactId);
+      const contactDocRef = doc(db, `categories/${categoryId}/contacts`, contactId);
       const contactDoc = await getDoc(contactDocRef);
       if (contactDoc.exists()) {
+        console.log(contactDocRef.path);
         setContact(contactDoc.data());
       }
 
       // Create Info sub-collection and InfoDoc document if it doesn't exist
-      const infoCollectionRef = collection(contactDocRef, 'Info'); // Corrected to use collection function
-      const infoDocRef = doc(infoCollectionRef, 'InfoDoc'); // Create a reference to the InfoDoc
+      const infoDocRef = doc(db, `categories/${categoryId}/contacts/${contactId}/Info`, 'InfoDoc');
       const infoDoc = await getDoc(infoDocRef);
       if (!infoDoc.exists()) {
+        console.log(infoDocRef.path);
         await setDoc(infoDocRef, {
           todos: [],
           reminders: [],
@@ -49,19 +51,18 @@ const Info = () => {
         setTransactions(data.transactions || []);
       }
     };
-
+    
     fetchContactData();
   }, [categoryId, contactId]);
 
   const saveToFirestore = async () => {
-    const infoDocRef = doc(collection(db, `categories/${categoryId}/contacts/${contactId}/Info`), 'InfoDoc');
+    const infoDocRef = doc(db, `categories/${categoryId}/contacts/${contactId}/Info`, 'InfoDoc');
     await setDoc(infoDocRef, {
-      todos: todos,
-      reminders: reminders,
-      transactions: transactions,
+      todos,
+      reminders,
+      transactions,
     });
   };
-
 
   const handleAddTodo = async () => {
     const newTodo = {
@@ -102,7 +103,6 @@ const Info = () => {
     setNewTransactionAmount('');
   };
 
-  // Define the missing functions here:
   const handleToggleComplete = (index) => {
     const updatedTodos = [...todos];
     updatedTodos[index].completed = !updatedTodos[index].completed; // Toggle completion status
@@ -125,7 +125,7 @@ const Info = () => {
   return (
     <div>
       <h2>{contact.name}</h2>
-      <img src={contact.imageURL} alt={contact.name} />
+      <img src={contact.imageUrl} alt={contact.name} />
 
       {/* To-Do List */}
       <div className='todo-container'>
