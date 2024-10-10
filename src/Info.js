@@ -3,6 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { db } from './firebase'; 
 import {  doc, getDoc, setDoc } from 'firebase/firestore';
 import Breadcrumb from './Breadcrumb';
+import './Info.css'
 
 const Info = () => {
   const { categoryId, contactId } = useParams();
@@ -133,10 +134,17 @@ const Info = () => {
   ];
 
   return (
-    <div>
+    <div className='Info-div'>
+      <div className='breadcrumb-div'>
       <Breadcrumb links={breadcrumbLinks} />
-      <h2>{contactName}</h2>
+      </div>
+      <div className='Info-sec'>
       <img src={contactImage} alt={contactName} />
+      <h2>{contactName}</h2>
+      </div>
+      
+      
+      
 
       {/* To-Do List */}
       <div className='todo-container'>

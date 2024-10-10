@@ -1,4 +1,4 @@
-import './contents.css';
+import './contacts.css';
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
@@ -146,8 +146,8 @@ const Contacts = ({ searchQuery }) => {
 
   return (
     <main>
-      <Breadcrumb links={breadcrumbLinks} />
-      <div>
+      <div className='breadcrumb-section'><Breadcrumb links={breadcrumbLinks} /></div>
+      <div className='sort-section'>
         {/* Dropdown for sorting */}
         <label htmlFor="sort-contacts">Sort by:</label>
         <select id="sort-contacts" onChange={handleSortChange}>
@@ -211,7 +211,7 @@ const Contacts = ({ searchQuery }) => {
             </div>
           ) : (
             <div onClick={() => setShowAddMoreForm(true)}>
-              <img className="thumbnail" src={Addmore} alt="Add More" />
+              <img className="thumbnail-add" src={Addmore} alt="Add More" />
               <p className="video-title">Add More</p>
             </div>
           )}

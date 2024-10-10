@@ -91,7 +91,7 @@ const Contents = () => {
             {editMode && editingCategoryId === item.id ? (
               // Render edit form inside the video preview
               <div className="form-container">
-                <input
+                <input className='edit-input'
                   type="text"
                   value={newCategoryTitle}
                   onChange={(e) => setNewCategoryTitle(e.target.value)}
@@ -135,7 +135,7 @@ const Contents = () => {
           {showAddMoreForm && !editMode ? (
             // Render add form when clicked on Add More
             <div className="form-container">
-              <input
+              <input className='form-input'
                 type="text"
                 value={newCategoryTitle}
                 onChange={(e) => setNewCategoryTitle(e.target.value)}
@@ -157,7 +157,7 @@ const Contents = () => {
           ) : (
             // Show Add More button when form is not open
             <div onClick={() => setShowAddMoreForm(true)}>
-              <img className="thumbnail" src={Addmore} alt="Add More" />
+              <img className="thumbnail-add" src={Addmore} alt="Add More" />
               <p className="video-title">Add More</p>
             </div>
           )}

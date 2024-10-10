@@ -1,0 +1,62 @@
+.Info-div{
+  display: flex;
+  flex-direction: column;
+  margin-top: 60px;
+  padding-left: 10px;
+}
+
+.breadcrumb-div{
+  padding-top: 5px;
+}
+
+.Info-sec{
+  display: flex;
+  flex-direction: row;
+  color: white;
+  font-size: 40px;
+  
+}
+
+.Info-sec img{
+  margin-right: 20px;
+}
+
+.todo-container,.reminder-container ,.finance-container{
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  background-color: #0c111a;
+}
+
+.todo-container-header{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  font-size: 24px;
+}
+
+.add-todo-form .add-reminder-form .add-finance-form{
+  display: flex;
+  flex-direction: row;
+  
+  padding: 10px;
+}
+
+.add-todo-form input ,.add-reminder-form input, .add-finance-form input{
+  width: 250px;
+  margin-right: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50px;
+  text-align: center;
+}
+
+.todo-list .reminder-list, .transaction-list{
+  color: white;
+}
