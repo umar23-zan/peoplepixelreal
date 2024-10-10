@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { db } from './firebase'; 
 import {  doc, getDoc, setDoc } from 'firebase/firestore';
+import Breadcrumb from './Breadcrumb';
 
 const Info = () => {
   const { categoryId, contactId } = useParams();
@@ -125,8 +126,15 @@ const Info = () => {
     saveToFirestore(); // Save updated transactions to Firestore
   };
 
+  const breadcrumbLinks = [
+    { label: 'Home', path: '/' },
+    { label: 'Categories', path: '/categories' },
+    { label: contactName || 'Contact', path: '#' }, // Current page doesn't have a link
+  ];
+
   return (
     <div>
+      <Breadcrumb links={breadcrumbLinks} />
       <h2>{contactName}</h2>
       <img src={contactImage} alt={contactName} />
 

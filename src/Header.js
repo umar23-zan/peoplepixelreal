@@ -6,7 +6,7 @@ import Search from './icons/search_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
 import Account from './icons/account_circle_24dp_E8EAED_FILL0_wght400_GRAD0_opsz24.svg';
 import { Link } from 'react-router-dom';
 
-const Header = ({ toggleSidebar }) => {
+const Header = ({ toggleSidebar, setSearchQuery }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -28,6 +28,11 @@ const Header = ({ toggleSidebar }) => {
     };
   }, []);
 
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <header className='Header-section'>
       <div className='left-logo'>
@@ -35,14 +40,18 @@ const Header = ({ toggleSidebar }) => {
         <img className='logo' src={Logo} alt="logo-svg" />
       </div>
       <div className='search-section'>
-        <input className='input-search' type='text' placeholder='Search' />
+        <input
+          className='input-search'
+          type='text'
+          placeholder='Search'
+          onChange={handleSearchChange}
+        />
         <button className='search-button'>
           <img className='search-svg' src={Search} alt='Search' />
         </button>
       </div>
       <div className='account-section'>
         <img className='account-svg' src={Account} alt='Account' onClick={handleAccountClick} />
-        
         {dropdownOpen && (
           <div ref={dropdownRef} className="dropdown-menu">
             <ul>

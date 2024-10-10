@@ -1,0 +1,14 @@
+/* breadcrumb.css */
+.breadcrumb {
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+.breadcrumb a {
+  text-decoration: none;
+  color: #007bff; /* Bootstrap primary color or customize */
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
