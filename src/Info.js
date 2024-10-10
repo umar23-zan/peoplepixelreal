@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { db } from './firebase'; 
 import {  doc, getDoc, setDoc } from 'firebase/firestore';
 
 const Info = () => {
   const { categoryId, contactId } = useParams();
-  const [contact, setContact] = useState({});
+  const location = useLocation();
+  const contactName = location.state?.contactName || "No Name Provided";
+  const contactImage = location.state?.contactImage || "https://via.placeholder.com/150";
+
   const [todos, setTodos] = useState([]);
   const [reminders, setReminders] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -27,7 +30,7 @@ const Info = () => {
       const contactDoc = await getDoc(contactDocRef);
       if (contactDoc.exists()) {
         console.log(contactDocRef.path);
-        setContact(contactDoc.data());
+        
       }
 
       // Create Info sub-collection and InfoDoc document if it doesn't exist
@@ -124,8 +127,8 @@ const Info = () => {
 
   return (
     <div>
-      <h2>{contact.name}</h2>
-      <img src={contact.imageUrl} alt={contact.name} />
+      <h2>{contactName}</h2>
+      <img src={contactImage} alt={contactName} />
 
       {/* To-Do List */}
       <div className='todo-container'>
